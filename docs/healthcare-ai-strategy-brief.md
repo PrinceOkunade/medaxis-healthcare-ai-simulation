@@ -1,48 +1,57 @@
 # Healthcare AI Strategy Brief
 
-**Project:** MedAxis Intelligence x Meridian Health Group (SortNext Project Lab simulation)  
-**Prepared by:** Prince Okunade  
-**GitHub:** https://github.com/PrinceOkunade/medaxis-healthcare-ai-simulation
+**Project:** MedAxis Intelligence × Meridian Health Group (SortNext Project Lab simulation)  
+**Prepared by:** Prince Okunade
 
 ## 1. Three core business problems
 
-**Readmissions:** Meridian's 30-day readmission rate is 18.4%, against a target below 14%. The scenario estimates £310,000 in annual savings for every percentage-point reduction; achieving a 4.4-point reduction would imply approximately £1.36 million annually.
+**Readmissions:** The 30-day readmission rate is 18.4%, versus a target below 14%. The simulated business case estimates £310,000 saved annually per percentage-point reduction; a 4.4-point reduction implies approximately £1.36 million yearly.
 
-**Capacity and patient flow:** Peak bed occupancy is 94.2%, delayed discharges affect 22.7% of cases, and average length of stay (LOS) is 6.8 days. The charter values a one-day LOS reduction at 1,840 bed-days and £2.1 million in annual operational capacity.
+**Patient flow:** Peak bed occupancy is 94.2%, delayed discharges are 22.7%, and average length of stay (LOS) is 6.8 days. The brief values a one-day LOS reduction at 1,840 released bed-days and £2.1 million in annual capacity.
 
-**Demand planning and documentation:** Emergency demand forecasting has approximately 31% error, while reviewing clinical notes takes 47 minutes per patient. Together, the proposed improvements contribute to the charter's estimated £9.2 million total annual opportunity, not an additional independently validated saving.
+**Planning and documentation:** Emergency demand forecast error is approximately 31%, while clinical note review takes 47 minutes per patient. The charter estimates £9.2 million in total potential annual benefit across improvements; this is not an independently verified outcome.
 
-## 2. Six proposed success metrics
+## 2. Six measurable success metrics
 
-1. **30-day readmission rate:** reduce from 18.4% to below 14%.
-2. **Peak bed occupancy:** reduce from 94.2% to below 88%.
-3. **Delayed discharge rate:** reduce from 22.7% to below 12%.
-4. **Average LOS:** reduce from 6.8 to below 5.5 days.
-5. **Emergency demand forecast error:** reduce from about 31% to below 12%, evaluated through rolling-origin backtesting.
-6. **Clinical note review time:** reduce from 47 to below 15 minutes per patient in a controlled workflow evaluation.
+1. Reduce 30-day readmissions from **18.4% to below 14%**.
+2. Reduce peak bed occupancy from **94.2% to below 88%**.
+3. Reduce delayed discharges from **22.7% to below 12%**.
+4. Reduce average LOS from **6.8 to below 5.5 days**.
+5. Reduce emergency demand forecast error from **approximately 31% to below 12%** using rolling-origin backtesting.
+6. Reduce clinical note review time from **47 to below 15 minutes per patient** in a supervised workflow trial.
 
-Clinical safety is a separate release gate: the readmission classifier must achieve recall of at least 0.72 on a held-out test set, alongside acceptable calibration and subgroup performance. The operational targets are simulated objectives, not achieved outcomes.
+A separate safety release gate requires readmission recall **≥0.72**, with calibration and subgroup validation.
 
-## 3. Stakeholder and decision ownership
+## 3. Stakeholder map and decision ownership
 
-**Dr Priya Nair, Meridian Chief Medical Officer:** clinical usefulness, patient-safety thresholds and final clinical sign-off. **James Okafor, MedAxis Head of Data Engineering:** source-data definitions, ingestion, warehouse integrity and pipeline remediation. **Sophia Reeves, MedAxis Head of AI Governance:** fairness review, model cards, monitoring and governance approval. **Marcus Webb, MedAxis Commercial Director:** benefit assumptions, contractual milestones, ROI case and board presentation. **Meridian legal team:** privacy and regulatory review. **Data science delivery team:** technical design, implementation, evaluation and evidence for these decisions.
+**Dr Priya Nair (Meridian CMO):** clinical risk tolerance, human escalation and final clinical sign-off. **James Okafor (MedAxis Data Engineering):** source definitions, pipeline integrity and remediation. **Sophia Reeves (AI Governance):** bias evaluation, model cards, monitoring controls and governance approval. **Marcus Webb (Commercial):** ROI assumptions, delivery milestones and board presentation. **Meridian Legal:** privacy and regulatory assessments. **Data science team:** model design, testing and reproducible evidence.
 
-## 4. Highest governance risks and mitigations
+## 4. Three highest governance risks
 
-**Patient safety and bias:** False negatives or disparities across age, ethnicity, deprivation, hospital and ward could cause harm. Report confusion matrices and subgroup recall, calibrate predictions, document limitations and retain human clinical override.
+**Clinical harm or bias:** Missed high-risk patients and unequal subgroup performance. Mitigate through recall and subgroup audits, calibration, explanations and clinician override.
 
-**Poor data quality and leakage:** Missing discharge dates, inconsistent LOS fields, duplicate records and the Week 68 `PARTIAL_DATA` anomaly can distort results. Implement automated validation, point-in-time features, patient-aware temporal splits and exclusion or documented remediation of corrupted periods.
+**Data defects and leakage:** Duplicates, missing dates, inconsistent LOS and Week 68's `PARTIAL_DATA` failure. Apply automated data checks, point-in-time features, temporal validation and quarantine of defective batches.
 
-**Privacy and regulatory non-compliance:** Clinical notes and health records require strict controls. Use de-identified data, least-privilege access, audit logs and a DPIA; assess SaMD/MHRA and NHS DTAC applicability before any real-world deployment.
+**Privacy or regulatory failure:** Sensitive clinical notes and potentially regulated medical software. Use de-identification, least-privilege access, audit logs and a DPIA; assess MHRA SaMD and NHS DTAC obligations before real deployment.
 
 ## 5. Proposed modelling approach
 
-**Readmission:** Benchmark regularised logistic regression against gradient boosting; validate temporally, calibrate risk scores, tune the decision threshold to meet recall ≥0.72 and explain outputs with SHAP.
+**Readmission:** Compare regularised logistic regression with gradient boosting; use temporal validation, calibrated probabilities, SHAP and threshold selection to meet recall ≥0.72.
 
-**Demand forecasting:** Compare seasonal-naive and SARIMAX baselines with lag-feature gradient boosting. Use rolling-origin evaluation for the 14-day horizon; investigate and exclude the Week 68 pipeline anomaly.
+**Demand:** Benchmark seasonal-naive and SARIMAX against lag-based boosting for 14-day forecasts; exclude the Week 68 pipeline anomaly.
 
-**Length of stay:** Compare a Gamma regression baseline with gradient-boosted regression, handle ongoing admissions and assess MAE across hospital sites and wards without post-discharge leakage.
+**LOS:** Compare Gamma regression and gradient boosting, handle patients still admitted and evaluate MAE by site and ward.
 
-**Clinical NLP:** On the 200-note sample, prototype de-identified entity extraction and ICD coding, assessing precision and recall against reviewed labels. For guideline search, evaluate a citation-grounded RAG assistant with unsupported-answer refusal tests.
+**NLP:** Validate clinical entity extraction and ICD coding on reviewed notes; test a citation-grounded RAG assistant for unsupported or unsafe answers.
 
-**Repository:** https://github.com/PrinceOkunade/medaxis-healthcare-ai-simulation
+## 6. Post-deployment monitoring and escalation
+
+**Daily:** James monitors ingestion failures, missing fields and schema changes; quarantine affected batches if critical-field missingness exceeds **2%** or feeds fail. Clinicians use the existing manual workflow until data are repaired.
+
+**Weekly:** Sophia reviews drift, calibration, subgroup recall and forecast error; outcomes for readmission are evaluated only after the **30-day label window** matures. **PSI >0.20 for two consecutive weeks**, a **subgroup recall gap >0.10**, or forecast error **>12% for two successive evaluation windows** triggers investigation, dataset review and consideration of retraining. Replacements must pass temporal, fairness and clinical validation before approval.
+
+**Emergency intervention:** If confirmed readmission recall falls **below 0.72**, a critical unsafe recommendation appears, or a serious privacy incident occurs, **suspend affected automated recommendations immediately**, alert Dr Nair and Sophia, and revert to clinician-led assessment. Re-enable only after documented root-cause review and clinical sign-off. These are proposed simulation thresholds, not approved hospital policies.
+
+## 7. GitHub repository
+
+https://github.com/PrinceOkunade/medaxis-healthcare-ai-simulation
